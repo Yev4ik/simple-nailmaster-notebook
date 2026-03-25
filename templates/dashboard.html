@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — NailBook{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Good {{ 'morning' if now.hour < 12 else ('afternoon' if now.hour < 18 else 'evening') }}, {{ user_name }}!</h1>
+        <p class="date-display">{{ today.strftime('%A, %B %d, %Y') }} · {{ visits_today }} visit{{ 's' if visits_today != 1 else '' }} today</p>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ visits_today }}</span>
+                <span class="stat-label">Visits Today</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon earnings-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <div class="stat-info">
+                <span class="stat-number">{{ monthly_earnings }} ₴</span>
+                <span class="stat-label">This Month</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-row">
+        <div class="content-card schedule-card">
+            <h2>Today's Schedule</h2>
+            {% if todays_appointments %}
+                <div class="schedule-list">
+                    {% for appt in todays_appointments %}
+                    <div class="schedule-item status-{{ appt.status|replace(' ', '-') }}">
+                        <div class="schedule-time">{{ appt.time.strftime('%H:%M') }}</div>
+                        <div class="schedule-details">
+                            <span class="schedule-client">{{ appt.client.name }}</span>
+                            <span class="schedule-procedure">{{ appt.procedure }}</span>
+                        </div>
+                        <div class="schedule-meta">
+                            <span class="schedule-price">{{ appt.price }} ₴</span>
+                            <span class="schedule-duration">{{ appt.duration }} min</span>
+                        </div>
+                        <span class="status-badge badge-{{ appt.status|replace(' ', '-') }}">{{ appt.status }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>No appointments today. Enjoy your free time!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="content-card notifications-card">
+            <h2>Notifications</h2>
+            <div class="notifications-list">
+                {% if birthdays %}
+                    {% for b in birthdays %}
+                    <div class="notification-item birthday">
+                        <span class="notification-icon">🎂</span>
+                        <div>
+                            <strong>{{ b.name }}</strong>
+                            {% if b.days_until == 0 %}
+                                <span>has a birthday today!</span>
+                            {% else %}
+                                <span>has a birthday in {{ b.days_until }} day{{ 's' if b.days_until != 1 else '' }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="notification-item motivation">
+                    <span class="notification-icon">✨</span>
+                    <p>{{ phrase }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Clients — NailBook{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/clients.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Clients</h1>
+        <button class="btn-primary" onclick="openModal('addClientModal')">+ Add Client</button>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="filters-bar">
+        <form method="GET" action="{{ url_for('clients.clients') }}" class="search-form">
+            <input type="text" name="search" placeholder="Search by name..." value="{{ search }}" class="search-input">
+            <select name="status" class="filter-select" onchange="this.form.submit()">
+                <option value="">All statuses</option>
+                <option value="new" {% if status_filter == 'new' %}selected{% endif %}>New</option>
+                <option value="regular" {% if status_filter == 'regular' %}selected{% endif %}>Regular</option>
+                <option value="vip" {% if status_filter == 'vip' %}selected{% endif %}>VIP</option>
+            </select>
+            <button type="submit" class="btn-secondary">Search</button>
+        </form>
+    </div>
+
+    <!-- Clients List -->
+    <div class="clients-grid">
+        {% for client in clients %}
+        <div class="client-card">
+            <div class="client-header">
+                <div class="client-avatar status-{{ client.status }}">{{ client.name[0] }}</div>
+                <div class="client-main-info">
+                    <h3>{{ client.name }}</h3>
+                    <span class="client-phone">{{ client.phone }}</span>
+                </div>
+                <span class="status-badge badge-{{ client.status }}">{{ client.status }}</span>
+            </div>
+            <div class="client-details">
+                {% if client.birthday %}
+                <div class="detail-row"><span class="detail-label">Birthday:</span> {{ client.birthday.strftime('%d.%m.%Y') }}</div>
+                {% endif %}
+                {% if client.nail_shape %}
+                <div class="detail-row"><span class="detail-label">Nail shape:</span> {{ client.nail_shape }}</div>
+                {% endif %}
+                {% if client.favourite_colours %}
+                <div class="detail-row"><span class="detail-label">Fav colours:</span> {{ client.favourite_colours }}</div>
+                {% endif %}
+                {% if client.allergies %}
+                <div class="detail-row"><span class="detail-label">Allergies:</span> {{ client.allergies }}</div>
+                {% endif %}
+                {% if client.notes %}
+                <div class="detail-row"><span class="detail-label">Notes:</span> {{ client.notes }}</div>
+                {% endif %}
+                <div class="detail-row"><span class="detail-label">Visits:</span> {{ client.visit_count }}</div>
+            </div>
+            <div class="client-actions">
+                <button class="btn-icon" onclick="openEditClient({{ client.id }}, '{{ client.name }}', '{{ client.phone }}', '{{ client.birthday if client.birthday else '' }}', '{{ client.notes or '' }}', '{{ client.allergies or '' }}', '{{ client.favourite_colours or '' }}', '{{ client.nail_shape or '' }}', '{{ client.status }}')">Edit</button>
+                <form method="POST" action="{{ url_for('clients.delete_client', client_id=client.id) }}" onsubmit="return confirm('Delete {{ client.name }}?')">
+                    <button type="submit" class="btn-icon btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>No clients found. Add your first client!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add Client Modal -->
+<div class="modal-overlay" id="addClientModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Add New Client</h2>
+            <button class="modal-close" onclick="closeModal('addClientModal')">&times;</button>
+        </div>
+        <form method="POST" action="{{ url_for('clients.add_client') }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" name="phone" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Birthday</label>
+                    <input type="date" name="birthday">
+                </div>
+                <div class="form-group">
+                    <label>Nail Shape</label>
+                    <select name="nail_shape">
+                        <option value="">Select...</option>
+                        <option value="square">Square</option>
+                        <option value="oval">Oval</option>
+                        <option value="almond">Almond</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="new">New</option>
+                        <option value="regular">Regular</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Favourite Colours</label>
+                    <input type="text" name="favourite_colours" placeholder="e.g. nude, red, pink">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Allergies</label>
+                <input type="text" name="allergies" placeholder="Any known allergies">
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea name="notes" rows="3" placeholder="Additional notes..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Add Client</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Client Modal -->
+<div class="modal-overlay" id="editClientModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>Edit Client</h2>
+            <button class="modal-close" onclick="closeModal('editClientModal')">&times;</button>
+        </div>
+        <form method="POST" id="editClientForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" name="name" id="edit_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" name="phone" id="edit_phone" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Birthday</label>
+                    <input type="date" name="birthday" id="edit_birthday">
+                </div>
+                <div class="form-group">
+                    <label>Nail Shape</label>
+                    <select name="nail_shape" id="edit_nail_shape">
+                        <option value="">Select...</option>
+                        <option value="square">Square</option>
+                        <option value="oval">Oval</option>
+                        <option value="almond">Almond</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" id="edit_status">
+                        <option value="new">New</option>
+                        <option value="regular">Regular</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Favourite Colours</label>
+                    <input type="text" name="favourite_colours" id="edit_favourite_colours">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Allergies</label>
+                <input type="text" name="allergies" id="edit_allergies">
+            </div>
+            <div class="form-group">
+                <label>Notes</label>
+                <textarea name="notes" id="edit_notes" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

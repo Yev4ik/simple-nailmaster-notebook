@@ -1,0 +1,114 @@
+/* ═══════════════════════════════════════
+   Checklists Page
+   ═══════════════════════════════════════ */
+
+.date-picker-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.date-picker-bar input[type="date"] {
+    padding: 0.5rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.9rem;
+    color: var(--plum);
+    background: white;
+}
+
+.date-picker-bar input[type="date"]:focus {
+    outline: none;
+    border-color: var(--pink-300);
+}
+
+/* Add task form */
+
+.add-task-form {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.task-input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    color: var(--plum);
+    background: white;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.task-input:focus {
+    outline: none;
+    border-color: var(--pink-300);
+    box-shadow: 0 0 0 3px rgba(244, 184, 193, 0.2);
+}
+
+/* Tasks list */
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    transition: all var(--transition);
+}
+
+.task-item:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.task-item.done {
+    opacity: 0.6;
+    background: var(--warm-gray);
+}
+
+.task-item.done .task-text {
+    text-decoration: line-through;
+    color: var(--plum-muted);
+}
+
+.checkbox-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    transition: transform var(--transition);
+}
+
+.checkbox-btn:hover {
+    transform: scale(1.1);
+}
+
+.task-text {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.task-actions {
+    display: flex;
+    gap: 0.4rem;
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+
+.task-item:hover .task-actions {
+    opacity: 1;
+}

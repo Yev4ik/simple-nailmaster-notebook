@@ -1,0 +1,127 @@
+/* ═══════════════════════════════════════
+   Clients Page
+   ═══════════════════════════════════════ */
+
+.filters-bar {
+    margin-bottom: 1.5rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    max-width: 320px;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.9rem;
+    color: var(--plum);
+    transition: border-color var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--pink-300);
+    box-shadow: 0 0 0 3px rgba(244, 184, 193, 0.2);
+}
+
+.filter-select {
+    padding: 0.6rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.9rem;
+    color: var(--plum);
+    background: white;
+    cursor: pointer;
+}
+
+/* Clients Grid */
+
+.clients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.2rem;
+}
+
+.client-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 1.3rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.client-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.client-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.client-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: white;
+    flex-shrink: 0;
+    background: var(--pink-300);
+}
+
+.client-avatar.status-vip { background: var(--gold); }
+.client-avatar.status-regular { background: var(--pink-400); }
+.client-avatar.status-new { background: #8ABADC; }
+
+.client-main-info {
+    flex: 1;
+}
+
+.client-main-info h3 {
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+}
+
+.client-phone {
+    font-size: 0.82rem;
+    color: var(--plum-muted);
+}
+
+.client-details {
+    margin-bottom: 0.8rem;
+}
+
+.detail-row {
+    font-size: 0.83rem;
+    padding: 0.2rem 0;
+    color: var(--plum-light);
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--plum);
+}
+
+.client-actions {
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--border);
+}

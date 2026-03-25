@@ -1,0 +1,92 @@
+/* ═══════════════════════════════════════
+   Auth Pages — Login & Register
+   ═══════════════════════════════════════ */
+
+.auth-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(244, 184, 193, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(201, 169, 110, 0.1) 0%, transparent 50%),
+        var(--pink-50);
+}
+
+.auth-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header svg {
+    margin-bottom: 0.8rem;
+}
+
+.auth-header h1 {
+    font-size: 1.7rem;
+    margin-bottom: 0.3rem;
+}
+
+.auth-header p {
+    color: var(--plum-muted);
+    font-size: 0.95rem;
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 2.8rem;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 0.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--plum-muted);
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password:hover { color: var(--plum); }
+
+.password-hint {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.78rem;
+    color: var(--plum-muted);
+}
+
+.auth-card .btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--plum-muted);
+}
+
+.auth-switch a {
+    font-weight: 600;
+}

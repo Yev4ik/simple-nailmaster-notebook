@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Appointments — NailBook{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Appointments</h1>
+        <button class="btn-primary" onclick="openModal('addApptModal')">+ New Appointment</button>
+    </div>
+
+    <!-- Week Navigation -->
+    <div class="week-nav">
+        <a href="{{ url_for('appointments.appointments', week=week_offset - 1) }}" class="btn-secondary">&larr; Previous</a>
+        <span class="week-label">{{ start_of_week.strftime('%d %b') }} — {{ end_of_week.strftime('%d %b %Y') }}</span>
+        <a href="{{ url_for('appointments.appointments', week=week_offset + 1) }}" class="btn-secondary">Next &rarr;</a>
+    </div>
+
+    <!-- Week Grid -->
+    <div class="week-grid">
+        {% for day, appts in days.items() %}
+        <div class="day-column {% if day == today %}today{% endif %}">
+            <div class="day-header">
+                <span class="day-name">{{ day.strftime('%a') }}</span>
+                <span class="day-date">{{ day.strftime('%d.%m') }}</span>
+            </div>
+            <div class="day-appointments">
+                {% for appt in appts %}
+                <div class="appt-card status-{{ appt.status|replace(' ', '-') }}">
+                    <div class="appt-time">{{ appt.time.strftime('%H:%M') }}</div>
+                    <div class="appt-client">{{ appt.client.name }}</div>
+                    <div class="appt-procedure">{{ appt.procedure }}</div>
+                    <div class="appt-meta">
+                        <span>{{ appt.price }} ₴</span>
+                        <span>{{ appt.duration }} min</span>
+                    </div>
+                    <div class="appt-status">
+                        <span class="status-badge badge-{{ appt.status|replace(' ', '-') }}">{{ appt.status }}</span>
+                    </div>
+                    {% if appt.status == 'on plan' %}
+                    <div class="appt-actions">
+                        <form method="POST" action="{{ url_for('appointments.update_status', appt_id=appt.id) }}" class="inline-form">
+                            <input type="hidden" name="status" value="cancelled">
+                            <button type="submit" class="btn-tiny btn-cancel">Cancel</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('appointments.update_status', appt_id=appt.id) }}" class="inline-form">
+                            <input type="hidden" name="status" value="did not come">
+                            <button type="submit" class="btn-tiny btn-noshow">No show</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="no-appt">—</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add Appointment Modal -->
+<div class="modal-overlay" id="addApptModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>New Appointment</h2>
+            <button class="modal-close" onclick="closeModal('addApptModal')">&times;</button>
+        </div>
+        <form method="POST" action="{{ url_for('appointments.add_appointment') }}">
+            <div class="form-group">
+                <label>Client *</label>
+                <select name="client_id" required>
+                    <option value="">Select client...</option>
+                    {% for client in clients %}
+                    <option value="{{ client.id }}">{{ client.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Procedure *</label>
+                <select name="procedure" id="procedureSelect" onchange="updateProcedureInfo()" required>
+                    <option value="">Select procedure...</option>
+                    {% for name, info in procedures.items() %}
+                    <option value="{{ name }}" data-price="{{ info.price }}" data-duration="{{ info.duration }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="procedure-info" id="procedureInfo" style="display:none;">
+                <span>Price: <strong id="procPrice"></strong> ₴</span>
+                <span>Duration: <strong id="procDuration"></strong> min</span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Time *</label>
+                    <input type="time" name="time" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">Add Appointment</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

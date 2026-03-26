@@ -31,10 +31,11 @@ def finance():
 
     total_spendings = sum(s.amount for s in spendings)
 
-    # Spendings by category
-    by_category = {}
+    # Spendings by category, sorted from highest to lowest
+    category_totals = {}
     for s in spendings:
-        by_category[s.category] = by_category.get(s.category, 0) + s.amount
+        category_totals[s.category] = category_totals.get(s.category, 0) + s.amount
+    by_category = dict(sorted(category_totals.items(), key=lambda x: x[1], reverse=True))
 
     net_profit = total_earnings - total_spendings
 

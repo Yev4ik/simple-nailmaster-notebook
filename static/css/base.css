@@ -455,6 +455,45 @@ main.with-sidebar {
 .badge-cancelled { background: #F5E5E5; color: #A05050; }
 .badge-did-not-come { background: #F0E8D8; color: #8A7040; }
 
+/* ─── Confirm Modal ─── */
+
+.confirm-modal {
+    text-align: center;
+    padding: 2rem 2.5rem;
+    max-width: 380px;
+}
+
+.confirm-icon {
+    margin-bottom: 1rem;
+}
+
+.confirm-text {
+    font-size: 1rem;
+    color: var(--plum);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.confirm-actions .btn-secondary,
+.confirm-actions .btn-primary {
+    flex: 1;
+    max-width: 140px;
+}
+
+.btn-confirm-danger {
+    background: linear-gradient(135deg, #D06B6B, #C05555) !important;
+}
+
+.btn-confirm-danger:hover {
+    background: linear-gradient(135deg, #C05555, #A04545) !important;
+}
+
 /* ─── Empty state ─── */
 
 .empty-state {

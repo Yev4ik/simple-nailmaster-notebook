@@ -22,7 +22,11 @@ def checklists():
         date=filter_date
     ).order_by(Checklist.is_done, Checklist.created_at).all()
 
-    return render_template('checklists.html', tasks=tasks, filter_date=filter_date, today=today)
+    total_tasks = len(tasks)
+    done_tasks = sum(1 for t in tasks if t.is_done)
+
+    return render_template('checklists.html', tasks=tasks, filter_date=filter_date, today=today,
+                           total_tasks=total_tasks, done_tasks=done_tasks)
 
 
 # Add a task

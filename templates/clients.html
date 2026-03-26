@@ -37,12 +37,15 @@
                 </div>
                 <span class="status-badge badge-{{ client.status }}">{{ client.status }}</span>
             </div>
-            <div class="client-details">
-                {% if client.birthday %}
-                <div class="detail-row"><span class="detail-label">Birthday:</span> {{ client.birthday.strftime('%d.%m.%Y') }}</div>
-                {% endif %}
+            <div class="client-summary">
+                <div class="detail-row"><span class="detail-label">Visits:</span> {{ client.visit_count }}</div>
                 {% if client.nail_shape %}
                 <div class="detail-row"><span class="detail-label">Nail shape:</span> {{ client.nail_shape }}</div>
+                {% endif %}
+            </div>
+            <div class="client-details collapsed" id="details-{{ client.id }}">
+                {% if client.birthday %}
+                <div class="detail-row"><span class="detail-label">Birthday:</span> {{ client.birthday.strftime('%d.%m.%Y') }}</div>
                 {% endif %}
                 {% if client.favourite_colours %}
                 <div class="detail-row"><span class="detail-label">Fav colours:</span> {{ client.favourite_colours }}</div>
@@ -53,11 +56,23 @@
                 {% if client.notes %}
                 <div class="detail-row"><span class="detail-label">Notes:</span> {{ client.notes }}</div>
                 {% endif %}
-                <div class="detail-row"><span class="detail-label">Visits:</span> {{ client.visit_count }}</div>
             </div>
+            <button class="btn-expand" onclick="toggleClientDetails('{{ client.id }}', this)">
+                <span class="expand-text">Show more</span>
+                <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
             <div class="client-actions">
-                <button class="btn-icon" onclick="openEditClient({{ client.id }}, '{{ client.name }}', '{{ client.phone }}', '{{ client.birthday if client.birthday else '' }}', '{{ client.notes or '' }}', '{{ client.allergies or '' }}', '{{ client.favourite_colours or '' }}', '{{ client.nail_shape or '' }}', '{{ client.status }}')">Edit</button>
-                <form method="POST" action="{{ url_for('clients.delete_client', client_id=client.id) }}" onsubmit="return confirm('Delete {{ client.name }}?')">
+                <button class="btn-icon edit-client-btn"
+                    data-id="{{ client.id }}"
+                    data-name="{{ client.name|e }}"
+                    data-phone="{{ client.phone|e }}"
+                    data-birthday="{{ client.birthday if client.birthday else '' }}"
+                    data-notes="{{ client.notes|e if client.notes else '' }}"
+                    data-allergies="{{ client.allergies|e if client.allergies else '' }}"
+                    data-colours="{{ client.favourite_colours|e if client.favourite_colours else '' }}"
+                    data-shape="{{ client.nail_shape or '' }}"
+                    data-status="{{ client.status }}">Edit</button>
+                <form method="POST" action="{{ url_for('clients.delete_client', client_id=client.id) }}" data-confirm="Delete {{ client.name }}?">
                     <button type="submit" class="btn-icon btn-danger">Delete</button>
                 </form>
             </div>

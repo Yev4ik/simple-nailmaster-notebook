@@ -4,10 +4,10 @@
 
 // Toggle password visibility
 function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    const btn = input.parentElement.querySelector('.toggle-password');
-    const eyeIcon = btn.querySelector('.eye-icon');
-    const eyeOffIcon = btn.querySelector('.eye-off-icon');
+    var input = document.getElementById(inputId);
+    var btn = input.parentElement.querySelector('.toggle-password');
+    var eyeIcon = btn.querySelector('.eye-icon');
+    var eyeOffIcon = btn.querySelector('.eye-off-icon');
 
     if (input.type === 'password') {
         input.type = 'text';
@@ -55,19 +55,53 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 4500);
 });
 
-// Open edit client modal with pre-filled data
-function openEditClient(id, name, phone, birthday, notes, allergies, colours, shape, status) {
-    document.getElementById('editClientForm').action = '/clients/edit/' + id;
-    document.getElementById('edit_name').value = name;
-    document.getElementById('edit_phone').value = phone;
-    document.getElementById('edit_birthday').value = birthday;
-    document.getElementById('edit_notes').value = notes;
-    document.getElementById('edit_allergies').value = allergies;
-    document.getElementById('edit_favourite_colours').value = colours;
-    document.getElementById('edit_nail_shape').value = shape;
-    document.getElementById('edit_status').value = status;
-    openModal('editClientModal');
+// Show styled confirmation modal instead of browser confirm()
+function showConfirm(message, onConfirm) {
+    var overlay = document.getElementById('confirmModal');
+    if (!overlay) return;
+    document.getElementById('confirmMessage').textContent = message;
+    var confirmBtn = document.getElementById('confirmYesBtn');
+    var newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.id = 'confirmYesBtn';
+    newBtn.addEventListener('click', function() {
+        closeModal('confirmModal');
+        onConfirm();
+    });
+    openModal('confirmModal');
 }
+
+// Intercept all forms with data-confirm attribute
+document.addEventListener('submit', function(e) {
+    var form = e.target;
+    if (!form.hasAttribute('data-confirm')) return;
+    if (form.dataset.confirmed === 'true') {
+        form.removeAttribute('data-confirmed');
+        return;
+    }
+    e.preventDefault();
+    showConfirm(form.getAttribute('data-confirm'), function() {
+        form.dataset.confirmed = 'true';
+        form.submit();
+    });
+});
+
+// Open edit client modal with pre-filled data from data attributes
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.edit-client-btn');
+    if (!btn) return;
+
+    document.getElementById('editClientForm').action = '/clients/edit/' + btn.dataset.id;
+    document.getElementById('edit_name').value = btn.dataset.name;
+    document.getElementById('edit_phone').value = btn.dataset.phone;
+    document.getElementById('edit_birthday').value = btn.dataset.birthday;
+    document.getElementById('edit_notes').value = btn.dataset.notes;
+    document.getElementById('edit_allergies').value = btn.dataset.allergies;
+    document.getElementById('edit_favourite_colours').value = btn.dataset.colours;
+    document.getElementById('edit_nail_shape').value = btn.dataset.shape;
+    document.getElementById('edit_status').value = btn.dataset.status;
+    openModal('editClientModal');
+});
 
 // Update procedure info in appointment form
 function updateProcedureInfo() {
@@ -84,9 +118,28 @@ function updateProcedureInfo() {
     }
 }
 
-// Open edit task modal
-function openEditTask(taskId, taskText) {
-    document.getElementById('editTaskForm').action = '/checklists/edit/' + taskId;
-    document.getElementById('edit_task_text').value = taskText;
-    openModal('editTaskModal');
+// Toggle client details expand/collapse
+function toggleClientDetails(clientId, btn) {
+    var details = document.getElementById('details-' + clientId);
+    var text = btn.querySelector('.expand-text');
+    var icon = btn.querySelector('.expand-icon');
+
+    if (details.classList.contains('collapsed')) {
+        details.classList.remove('collapsed');
+        text.textContent = 'Show less';
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        details.classList.add('collapsed');
+        text.textContent = 'Show more';
+        icon.style.transform = 'rotate(0deg)';
+    }
 }
+
+// Open edit task modal from data attributes
+document.addEventListener('click', function(e) {
+    var btn = e.target.closest('.edit-task-btn');
+    if (!btn) return;
+    document.getElementById('editTaskForm').action = '/checklists/edit/' + btn.dataset.id;
+    document.getElementById('edit_task_text').value = btn.dataset.text;
+    openModal('editTaskModal');
+});

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════
-   Appointments Page
+   Appointments Page — Timeline View
    ═══════════════════════════════════════ */
 
 .week-nav {
@@ -18,32 +18,72 @@
     text-align: center;
 }
 
-/* Week Grid */
+/* ─── Timeline Grid ─── */
 
-.week-grid {
+.timeline-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.6rem;
-}
-
-.day-column {
+    grid-template-columns: 50px repeat(7, 1fr);
+    gap: 0;
     background: white;
     border-radius: var(--radius-md);
     border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
-    min-height: 200px;
+}
+
+/* ─── Time Labels ─── */
+
+.time-labels {
+    border-right: 1px solid var(--border);
+    background: var(--warm-gray);
+}
+
+.day-header-spacer {
+    height: 52px;
+    border-bottom: 1px solid var(--border);
+}
+
+.time-label {
+    height: 70px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 0.2rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--plum-muted);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+}
+
+.time-label:last-child {
+    border-bottom: none;
+}
+
+/* ─── Day Columns ─── */
+
+.day-column {
+    border-right: 1px solid var(--border);
+    min-width: 0;
+}
+
+.day-column:last-child {
+    border-right: none;
 }
 
 .day-column.today {
-    border-color: var(--pink-300);
-    box-shadow: 0 0 0 1px var(--pink-300);
+    background: rgba(244, 184, 193, 0.06);
 }
 
 .day-header {
-    padding: 0.7rem;
+    padding: 0.6rem 0.3rem;
     text-align: center;
     background: var(--warm-gray);
     border-bottom: 1px solid var(--border);
+    height: 52px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .day-column.today .day-header {
@@ -53,91 +93,140 @@
 .day-name {
     display: block;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--plum);
 }
 
 .day-date {
-    font-size: 0.78rem;
-    color: var(--plum-muted);
-}
-
-.day-appointments {
-    padding: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.appt-card {
-    padding: 0.6rem;
-    border-radius: var(--radius-sm);
-    background: var(--pink-50);
-    border-left: 3px solid var(--pink-300);
-    font-size: 0.78rem;
-}
-
-.appt-card.status-cancelled {
-    opacity: 0.5;
-    border-left-color: #C0A0A0;
-    background: #F8F0F0;
-}
-
-.appt-card.status-did-not-come {
-    opacity: 0.65;
-    border-left-color: #D0B070;
-    background: #F8F4E8;
-}
-
-.appt-card.status-done {
-    border-left-color: #7BC07B;
-    background: #F0F8F0;
-}
-
-.appt-time {
-    font-weight: 700;
-    color: var(--plum);
-    margin-bottom: 0.15rem;
-}
-
-.appt-client {
-    font-weight: 600;
-    font-size: 0.82rem;
-}
-
-.appt-procedure {
-    color: var(--plum-muted);
-    font-size: 0.75rem;
-    margin-bottom: 0.2rem;
-}
-
-.appt-meta {
-    display: flex;
-    justify-content: space-between;
     font-size: 0.72rem;
     color: var(--plum-muted);
 }
 
-.appt-status {
-    margin-top: 0.3rem;
+.day-column.today .day-date {
+    color: var(--plum);
 }
 
-.appt-actions {
+/* ─── Day Timeline ─── */
+
+.day-timeline {
+    position: relative;
+    height: calc(70px * 9);
+}
+
+.hour-slot {
+    height: 70px;
+    border-bottom: 1px solid var(--border);
+}
+
+.hour-slot:last-child {
+    border-bottom: none;
+}
+
+/* ─── Appointment Blocks ─── */
+
+.appt-block {
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    border-radius: 6px;
+    padding: 0.3rem 0.4rem;
+    font-size: 0.72rem;
+    overflow: hidden;
+    z-index: 2;
+    border-left: 3px solid var(--pink-400);
+    background: var(--pink-50);
+    cursor: default;
     display: flex;
-    gap: 0.3rem;
-    margin-top: 0.3rem;
+    flex-direction: column;
+    gap: 0.1rem;
+    transition: box-shadow var(--transition);
 }
 
-.no-appt {
-    text-align: center;
+.appt-block:hover {
+    box-shadow: var(--shadow-md);
+    z-index: 3;
+}
+
+.appt-block.status-done {
+    border-left-color: #7BC07B;
+    background: #F0F8F0;
+}
+
+.appt-block.status-cancelled {
+    border-left-color: #C0A0A0;
+    background: #F8F0F0;
+    opacity: 0.55;
+}
+
+.appt-block.status-did-not-come {
+    border-left-color: #D0B070;
+    background: #F8F4E8;
+    opacity: 0.65;
+}
+
+.appt-block-time {
+    font-weight: 700;
+    color: var(--plum);
+    font-size: 0.7rem;
+}
+
+.appt-block-client {
+    font-weight: 600;
+    font-size: 0.73rem;
+    color: var(--plum);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.appt-block-procedure {
     color: var(--plum-muted);
-    padding: 1rem 0;
-    font-size: 0.85rem;
+    font-size: 0.67rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Procedure info */
+.appt-block-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.67rem;
+    color: var(--plum-muted);
+    margin-top: auto;
+}
+
+.appt-block-meta .status-badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+}
+
+.appt-block-actions {
+    display: flex;
+    gap: 0.2rem;
+    margin-top: 0.15rem;
+}
+
+.appt-block-actions .btn-tiny {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.35rem;
+}
+
+.no-appt-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--plum-muted);
+    font-size: 0.85rem;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* ─── Procedure Info (modal) ─── */
 
 .procedure-info {
     display: flex;
@@ -149,16 +238,47 @@
     font-size: 0.88rem;
 }
 
-/* Responsive */
+/* ─── Responsive ─── */
 
 @media (max-width: 1100px) {
-    .week-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .timeline-grid {
+        grid-template-columns: 45px repeat(7, 1fr);
+    }
+
+    .time-label {
+        font-size: 0.62rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .timeline-grid {
+        grid-template-columns: 42px repeat(3, 1fr);
+        overflow-x: auto;
+    }
+
+    .day-column:nth-child(n+5) {
+        display: none;
     }
 }
 
 @media (max-width: 600px) {
-    .week-grid {
-        grid-template-columns: 1fr;
+    .timeline-grid {
+        grid-template-columns: 40px 1fr;
+    }
+
+    .day-column:nth-child(n+3) {
+        display: none;
+    }
+
+    .time-label {
+        height: 60px;
+    }
+
+    .hour-slot {
+        height: 60px;
+    }
+
+    .day-timeline {
+        height: calc(60px * 9);
     }
 }

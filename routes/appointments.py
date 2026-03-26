@@ -2,7 +2,7 @@ import os
 from datetime import date, time, datetime, timedelta
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from models import db, Appointment, Client
+from models import db, Appointment, Client, mark_past_appointments_done
 
 appointments_bp = Blueprint('appointments', __name__)
 
@@ -59,12 +59,7 @@ def appointments():
     clients = Client.query.filter_by(user_id=current_user.id).order_by(Client.name).all()
 
     # Auto-mark past appointments as done
-    now = datetime.now()
-    for appt in week_appointments:
-        end_time = datetime.combine(appt.date, appt.time) + timedelta(minutes=appt.duration)
-        if end_time <= now and appt.status == 'on plan':
-            appt.status = 'done'
-    db.session.commit()
+    mark_past_appointments_done(week_appointments)
 
     return render_template('appointments.html',
                            days=days,
@@ -111,6 +106,12 @@ def add_appointment():
     appt_datetime = datetime.combine(appt_date, appt_time)
     if appt_datetime < datetime.now():
         flash('Cannot add an appointment in the past.', 'error')
+        return redirect(url_for('appointments.appointments'))
+
+    # Working hours: 10:00–19:00
+    appt_end_time = (appt_datetime + timedelta(minutes=procedures[procedure]['duration'])).time()
+    if appt_time < time(10, 0) or appt_end_time > time(19, 0):
+        flash('Appointments are only available between 10:00 and 19:00.', 'error')
         return redirect(url_for('appointments.appointments'))
 
     price = procedures[procedure]['price']

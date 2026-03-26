@@ -18,29 +18,46 @@
         <a href="{{ url_for('appointments.appointments', week=week_offset + 1) }}" class="btn-secondary">Next &rarr;</a>
     </div>
 
-    <!-- Week Grid -->
-    <div class="week-grid">
+    <!-- Timeline Week Grid -->
+    <div class="timeline-grid">
+        <!-- Time labels column -->
+        <div class="time-labels">
+            <div class="day-header-spacer"></div>
+            {% for hour in range(10, 19) %}
+            <div class="time-label">{{ '%02d' % hour }}:00</div>
+            {% endfor %}
+        </div>
+
+        <!-- Day columns -->
         {% for day, appts in days.items() %}
         <div class="day-column {% if day == today %}today{% endif %}">
             <div class="day-header">
                 <span class="day-name">{{ day.strftime('%a') }}</span>
                 <span class="day-date">{{ day.strftime('%d.%m') }}</span>
             </div>
-            <div class="day-appointments">
+            <div class="day-timeline">
+                <!-- Hour grid lines -->
+                {% for hour in range(10, 19) %}
+                <div class="hour-slot"></div>
+                {% endfor %}
+
+                <!-- Appointment blocks positioned on timeline -->
                 {% for appt in appts %}
-                <div class="appt-card status-{{ appt.status|replace(' ', '-') }}">
-                    <div class="appt-time">{{ appt.time.strftime('%H:%M') }}</div>
-                    <div class="appt-client">{{ appt.client.name }}</div>
-                    <div class="appt-procedure">{{ appt.procedure }}</div>
-                    <div class="appt-meta">
+                {% set start_minutes = appt.time.hour * 60 + appt.time.minute %}
+                {% set offset_minutes = start_minutes - 600 %}
+                {% set top_pct = (offset_minutes / 540) * 100 %}
+                {% set height_pct = (appt.duration / 540) * 100 %}
+                <div class="appt-block status-{{ appt.status|replace(' ', '-') }}"
+                     style="top: {{ top_pct }}%; height: {{ height_pct }}%;">
+                    <div class="appt-block-time">{{ appt.time.strftime('%H:%M') }}</div>
+                    <div class="appt-block-client">{{ appt.client.name }}</div>
+                    <div class="appt-block-procedure">{{ appt.procedure }}</div>
+                    <div class="appt-block-meta">
                         <span>{{ appt.price }} ₴</span>
-                        <span>{{ appt.duration }} min</span>
-                    </div>
-                    <div class="appt-status">
                         <span class="status-badge badge-{{ appt.status|replace(' ', '-') }}">{{ appt.status }}</span>
                     </div>
                     {% if appt.status == 'on plan' %}
-                    <div class="appt-actions">
+                    <div class="appt-block-actions">
                         <form method="POST" action="{{ url_for('appointments.update_status', appt_id=appt.id) }}" class="inline-form">
                             <input type="hidden" name="status" value="cancelled">
                             <button type="submit" class="btn-tiny btn-cancel">Cancel</button>
@@ -52,9 +69,11 @@
                     </div>
                     {% endif %}
                 </div>
-                {% else %}
-                <div class="no-appt">—</div>
                 {% endfor %}
+
+                {% if not appts %}
+                <div class="no-appt-overlay">—</div>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -98,7 +117,7 @@
                 </div>
                 <div class="form-group">
                     <label>Time *</label>
-                    <input type="time" name="time" required>
+                    <input type="time" name="time" min="10:00" max="19:00" required>
                 </div>
             </div>
             <button type="submit" class="btn-primary">Add Appointment</button>

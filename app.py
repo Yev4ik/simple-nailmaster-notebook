@@ -1,3 +1,4 @@
+import os
 from flask import Flask, redirect, url_for
 from flask_login import LoginManager
 from models import db, User
@@ -6,7 +7,7 @@ from datetime import datetime, timezone
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'nailmaster-secret-key-change-in-production'
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-fallback-change-in-production')
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -19,7 +20,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return db.session.get(User, int(user_id))
 
     # Register blueprints
     from routes.auth import auth_bp

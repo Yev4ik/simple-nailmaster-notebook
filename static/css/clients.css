@@ -119,6 +119,46 @@
     color: var(--plum);
 }
 
+.client-summary {
+    margin-bottom: 0.4rem;
+}
+
+.client-details {
+    overflow: hidden;
+    max-height: 300px;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.client-details.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.btn-expand {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: none;
+    border: none;
+    color: var(--pink-500);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.3rem 0;
+    transition: color var(--transition);
+}
+
+.btn-expand:hover {
+    color: var(--pink-600);
+}
+
+.expand-icon {
+    transition: transform 0.3s ease;
+}
+
 .client-actions {
     display: flex;
     gap: 0.5rem;

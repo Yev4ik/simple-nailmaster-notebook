@@ -3,7 +3,7 @@ import random
 from datetime import date, timedelta, datetime, time
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from models import Appointment, Client
+from models import Appointment, Client, mark_past_appointments_done
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -59,13 +59,7 @@ def dashboard():
     monthly_earnings = sum(a.price for a in monthly_appointments)
 
     # Mark past appointments as done if status is still 'on plan'
-    now = datetime.now()
-    for appt in todays_appointments:
-        end_time = datetime.combine(today, appt.time) + timedelta(minutes=appt.duration)
-        if end_time <= now and appt.status == 'on plan':
-            appt.status = 'done'
-    from models import db
-    db.session.commit()
+    mark_past_appointments_done(todays_appointments)
 
     # Notifications
     birthdays = get_upcoming_birthdays(current_user.id)

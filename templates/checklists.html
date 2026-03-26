@@ -20,6 +20,19 @@
         {% endif %}
     </div>
 
+    <!-- Progress bar -->
+    {% if total_tasks > 0 %}
+    <div class="progress-section">
+        <div class="progress-header">
+            <span class="progress-label">{{ done_tasks }}/{{ total_tasks }} tasks done</span>
+            <span class="progress-percent">{{ ((done_tasks / total_tasks) * 100)|int }}%</span>
+        </div>
+        <div class="progress-bar-wrapper">
+            <div class="progress-bar" style="width: {{ ((done_tasks / total_tasks) * 100)|int }}%"></div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Add task form -->
     <form method="POST" action="{{ url_for('checklists.add_task') }}" class="add-task-form">
         <input type="hidden" name="date" value="{{ filter_date }}">
@@ -42,7 +55,7 @@
             </form>
             <span class="task-text">{{ task.task }}</span>
             <div class="task-actions">
-                <button class="btn-icon btn-sm" onclick="openEditTask({{ task.id }}, '{{ task.task|replace("'", "\\'") }}')">Edit</button>
+                <button class="btn-icon btn-sm edit-task-btn" data-id="{{ task.id }}" data-text="{{ task.task|e }}">Edit</button>
                 <form method="POST" action="{{ url_for('checklists.delete_task', task_id=task.id) }}" class="inline-form">
                     <button type="submit" class="btn-icon btn-danger btn-sm">Delete</button>
                 </form>

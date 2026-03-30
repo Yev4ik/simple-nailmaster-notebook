@@ -58,11 +58,11 @@
                     </div>
                     {% if appt.status == 'on plan' %}
                     <div class="appt-block-actions">
-                        <form method="POST" action="{{ url_for('appointments.update_status', appt_id=appt.id) }}" class="inline-form">
+                        <form method="POST" action="{{ url_for('appointments.update_status', appt_id=appt.id) }}" class="inline-form" data-confirm="Cancel this appointment for {{ appt.client.name }}?">
                             <input type="hidden" name="status" value="cancelled">
                             <button type="submit" class="btn-tiny btn-cancel">Cancel</button>
                         </form>
-                        <form method="POST" action="{{ url_for('appointments.update_status', appt_id=appt.id) }}" class="inline-form">
+                        <form method="POST" action="{{ url_for('appointments.update_status', appt_id=appt.id) }}" class="inline-form" data-confirm="Mark {{ appt.client.name }} as no show?">
                             <input type="hidden" name="status" value="did not come">
                             <button type="submit" class="btn-tiny btn-noshow">No show</button>
                         </form>

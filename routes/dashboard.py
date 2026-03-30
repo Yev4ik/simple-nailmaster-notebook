@@ -41,6 +41,13 @@ def dashboard():
     today = date.today()
     first_day_of_month = today.replace(day=1)
 
+    # Mark past appointments as done BEFORE calculating earnings
+    pending_today = Appointment.query.filter_by(
+        user_id=current_user.id,
+        date=today
+    ).all()
+    mark_past_appointments_done(pending_today)
+
     # Today's appointments
     todays_appointments = Appointment.query.filter_by(
         user_id=current_user.id,
@@ -58,12 +65,11 @@ def dashboard():
     ).all()
     monthly_earnings = sum(a.price for a in monthly_appointments)
 
-    # Mark past appointments as done if status is still 'on plan'
-    mark_past_appointments_done(todays_appointments)
-
     # Notifications
     birthdays = get_upcoming_birthdays(current_user.id)
     phrase = get_random_phrase()
+
+    local_hour = datetime.now().hour
 
     return render_template('dashboard.html',
                            visits_today=visits_today,
@@ -72,4 +78,5 @@ def dashboard():
                            birthdays=birthdays,
                            phrase=phrase,
                            today=today,
+                           local_hour=local_hour,
                            user_name=current_user.name)

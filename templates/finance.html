@@ -33,12 +33,13 @@
         <h3>Spendings by Category</h3>
         <div class="category-bars">
             {% for cat, amount in by_category.items() %}
+            {% set pct = (amount / total_spendings * 100)|round(1) %}
             <div class="category-row">
                 <span class="category-name">{{ cat|capitalize }}</span>
                 <div class="category-bar-wrapper">
-                    <div class="category-bar cat-{{ cat }}" style="width: {{ (amount / total_spendings * 100)|int }}%"></div>
+                    <div class="category-bar cat-{{ cat }}" style="width: {{ pct|int }}%"></div>
                 </div>
-                <span class="category-amount">{{ amount }} ₴</span>
+                <span class="category-amount">{{ amount }} ₴ ({{ pct }}%)</span>
             </div>
             {% endfor %}
         </div>

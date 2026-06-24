@@ -26,19 +26,21 @@ def register():
         phone = request.form.get('phone', '').strip()
         password = request.form.get('password', '')
 
+        form_data = {'name': name, 'email': email, 'phone': phone}
+
         if not all([name, email, phone, password]):
             flash('All fields are required.', 'error')
-            return render_template('register.html')
+            return render_template('register.html', **form_data)
 
         existing = User.query.filter_by(email=email).first()
         if existing:
             flash('This email is already registered.', 'error')
-            return render_template('register.html')
+            return render_template('register.html', **form_data)
 
         valid, msg = validate_password(password)
         if not valid:
             flash(msg, 'error')
-            return render_template('register.html')
+            return render_template('register.html', **form_data)
 
         user = User(
             name=name,
@@ -63,16 +65,16 @@ def login():
 
         if not all([email, password]):
             flash('All fields are required.', 'error')
-            return render_template('login.html')
+            return render_template('login.html', email=email)
 
         user = User.query.filter_by(email=email).first()
         if not user:
             flash("You haven't registered yet!", 'error')
-            return render_template('login.html')
+            return render_template('login.html', email=email)
 
         if not check_password_hash(user.password_hash, password):
             flash('Wrong email or password.', 'error')
-            return render_template('login.html')
+            return render_template('login.html', email=email)
 
         login_user(user)
         return redirect(url_for('dashboard.dashboard'))

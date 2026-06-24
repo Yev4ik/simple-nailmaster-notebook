@@ -26,15 +26,15 @@
         <form method="POST" action="{{ url_for('auth.register') }}">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your full name" required>
+                <input type="text" id="name" name="name" placeholder="Your full name" value="{{ name|default('', true) }}" required>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                <input type="email" id="email" name="email" placeholder="your@email.com" value="{{ email|default('', true) }}" required>
             </div>
             <div class="form-group">
                 <label for="phone">Phone</label>
-                <input type="tel" id="phone" name="phone" placeholder="+380 XX XXX XX XX" required>
+                <input type="tel" id="phone" name="phone" placeholder="+380 XX XXX XX XX" value="{{ phone|default('', true) }}" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>

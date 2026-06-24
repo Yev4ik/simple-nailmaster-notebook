@@ -7,7 +7,7 @@
 {% block content %}
 <div class="page-container">
     <div class="page-header">
-        <h1>Good {{ 'morning' if now.hour < 12 else ('afternoon' if now.hour < 18 else 'evening') }}, {{ user_name }}!</h1>
+        <h1>Good {{ 'morning' if local_hour < 12 else ('afternoon' if local_hour < 18 else 'evening') }}, {{ user_name }}!</h1>
         <p class="date-display">{{ today.strftime('%A, %B %d, %Y') }} · {{ visits_today }} visit{{ 's' if visits_today != 1 else '' }} today</p>
     </div>
 
